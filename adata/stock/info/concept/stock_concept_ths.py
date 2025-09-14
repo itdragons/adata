@@ -139,8 +139,11 @@ class StockConceptThs(StockConceptTemplate):
         while curr_page <= total_pages:
             api_url = f"http://q.10jqka.com.cn/gn/detail/field/199112/order/desc/page/" \
                       f"{curr_page}/ajax/1/code/{concept_code}"
+            api_url = 'https://q.10jqka.com.cn/gn/detail/field/199112/order/desc/page/1/ajax/1/code/301539'
             headers = copy.deepcopy(ths_headers.text_headers)
-            headers['Cookie'] = cookie.ths_cookie()
+            headers = {}
+            # headers['Cookie'] = cookie.ths_cookie()
+            headers['Cookie'] = "v=A1GxHY3F3aXI6TGxiYsl9qEgZlbuvsVvbzJpRDPmTZg32n-Iew7VAP-CeXrA"
             res = requests.request(method='get', url=api_url, headers=headers, proxies={}, wait_time=wait_time)
             curr_page += 1
             # 2. 判断请求是否成功
@@ -257,9 +260,13 @@ class StockConceptThs(StockConceptTemplate):
             page_data = []
             data_list = data_dic['datas']
             for one in data_list:
-                if (name == one['所属概念']) or \
-                        ('所属指数类' in one.keys() and (name == one['所属指数类'] or f"{name};" in one['所属指数类'])):
-                    page_data.append({'stock_code': one['code'], 'short_name': one['股票简称'], '': ''})
+                concepts = one['所属概念'].split(';')
+                indexs = (one['所属指数类'] or "").split(';')
+                if (name in concepts) or (name in indexs):
+                # if (name == one['所属概念']) or \
+                #         ('所属指数类' in one.keys() and one['所属指数类'] is not None and 
+                #          (name == one['所属指数类'] or name in one['所属指数类'].split(';'))):
+                    page_data.append({'stock_code': one['code'], 'short_name': one['股票简称']})
             data.extend(page_data)
         # 5. 封装数据
         if not data:

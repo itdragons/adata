@@ -53,8 +53,9 @@ class StockConceptEast(StockConceptTemplate):
         except Exception as e:
             result_df = pd.DataFrame(data=[], columns=self._CONCEPT_CODE_COLUMNS)
         # 2. 读取缓存文件 结果拼接去重
-        csv_df = pd.read_csv(get_all_concept_code_east_csv_path())
-        result_df = pd.concat([result_df, csv_df], ignore_index=True).drop_duplicates(subset=['concept_code'])
+        # csv_df = pd.read_csv(get_all_concept_code_east_csv_path())
+        # result_df = pd.concat([result_df, csv_df], ignore_index=True).drop_duplicates(subset=['concept_code'])
+        result_df.drop_duplicates(subset=['concept_code'], inplace=True)
         return result_df
 
     def concept_constituent_east(self, concept_code=None, wait_time=None):
